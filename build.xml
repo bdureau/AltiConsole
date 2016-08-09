@@ -1,0 +1,91 @@
+<project name="AltiConsole" basedir=".">
+
+	<property file="Resources/build.properties" />
+		
+	<property name="src.dir"    	value="src"/>		<!-- Source directory -->
+	<!--<property name="src-test.dir"	value="test"/>	-->	<!-- Test directory -->
+	<property name="build.dir"   	value="build"/>		<!-- Build directory -->
+	<property name="build-test.dir" value="build/test"/><!-- Build directory -->
+		
+	<!-- Distribution directory, from which stuff is jar'ed -->
+	<property name="dist.dir"    	value="${build.dir}/dist"/> 
+	<property name="dist-test.dir"	value="${build.dir}/dist-test"/>
+	
+	<property name="classes.dir" value="${dist.dir}"/>	<!-- Directory for classes -->
+	<property name="jar.dir"     value="${build.dir}/jar"/>	<!-- Directory for built jar's -->
+	<property name="lib.dir"     value="lib"/>				<!-- Library source directory -->
+
+	<property name="pkgname"     value="${ant.project.name}-${build.version}"/>
+	
+	<property name="jar.file"    value="${jar.dir}/${ant.project.name}.jar"/>
+	<property name="dist.bin"    value="${jar.dir}/${pkgname}.jar"/>
+	<property name="dist.src"    value="${jar.dir}/${pkgname}-src.zip"/>
+
+	<!-- The main class of the application -->
+	<property name="main-class"  value="AltiConsole.AltiConsoleMainScreen"/>
+	
+
+	<!-- Classpath definitions -->
+	<path id="classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar"/>
+	</path>
+	
+	<path id="test-classpath">
+		<path refid="classpath"/>
+		<pathelement location="${basedir}"/>
+		<pathelement location="${build-test.dir}"/>
+		<pathelement location="${classes.dir}"/>
+		<pathelement location="${src-test.dir}"/>
+		<fileset dir="lib-test/" includes="*.jar"/>
+	</path>
+	
+
+	
+	<!-- CLEAN -->
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+		<delete dir="tmp/"/>
+	</target>
+		
+	
+	<!-- BUILD -->
+	<target name="build">
+		<mkdir dir="${classes.dir}"/>
+		<echo level="info">Compiling main classes</echo>
+		<javac debug="true" srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+		<echo level="info">Copying build.properties</echo>
+		<copy file="Resources/build.properties" todir="${dist.dir}"/>
+		<copy file="Resources/LICENSE.TXT" todir="${dist.dir}"/>
+	</target>
+	
+	
+	<!-- JAR -->
+	<target name="jar" depends="build">
+		<copy todir="${dist.dir}/">
+			<fileset dir="." includes="Resources/build.properties" />
+			<fileset dir="." includes="Resources/LICENSE.TXT" />
+			<fileset dir="." includes="src/ l10n/ pix/ Resources/" />
+			
+			
+		</copy>
+		<mkdir dir="${jar.dir}"/>
+		<jar destfile="${jar.file}" basedir="${dist.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}"/>
+				<attribute name="SplashScreen-Image" value="pix/splashscreen.png" />
+			</manifest>
+			<!-- <zipfileset src="lib/miglayout15-swing.jar " />-->
+			<zipfileset src="lib/jcommon-1.0.20.jar " />
+			<zipfileset src="lib/jfreechart-1.0.16.jar " />
+			<zipfileset src="lib/swingx-all-1.6.4.jar " />
+			<zipfileset src="lib/RXTXcomm.jar " />
+			<zipfileset src="lib/miglayout15-swing.jar " />
+		</jar>
+	</target>
+	
+	<!-- DIST-BIN -->
+	<target name="dist-bin" depends="clean,jar">
+		<move file="${jar.file}" tofile="${dist.bin}"/>
+	</target>
+
+</project>
