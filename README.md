@@ -3,6 +3,8 @@ AltiMulti Java console. Connect to the Altimeter using the USB cable, bluetooth 
 
 <img src="/pictures/main screen - comment.png" width="49%">
 
+Note that I have also done an [Android version](https://github.com/bdureau/BearConsole2) that can be run on a phone or a tablet which is quite conveniant when you are on the field.
+
 # Building/modifying the application
 If you want to modify the code you will need to install to install Eclipse on your computer.
 
